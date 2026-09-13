@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iskolai Ötletdoboz - Problémamegoldás</title>
+    <link rel="stylesheet" href="projekt.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+                <div class="school-badge">
+                    <img src="gepesz_alap_5d3a12540c.png" alt="Iskola logó" class="badge-icon">
+                </div>
+            </div>
+            <h1>Iskolai Ötletdoboz</h1>
+            <p class="subtitle">Láttál problémát? Van megoldási ötleted? Oszd meg velünk!</p>
+            <div class="motto">"Ne csak panaszkodj, tegyél is érte!"</div>
+        </header>
+
+        <div class="idea-box">
+            
+            <div class="input-section">
+                <div class="input-header">
+                    <h2>📮 Új ötlet beküldése</h2>
+                    <span class="badge">Diákok és Tanárok</span>
+                </div>
+                
+                <form id="ideaForm">
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="category">
+                                <span class="label-icon">📌</span>
+                                Kategória
+                            </label>
+                            <select id="category" required>
+                                <option value="" disabled selected>-- Válassz kategóriát --</option>
+                                <option value="oktatas">📚 Oktatás & Tanulás</option>
+                                <option value="kornyezet">🏫 Iskolai környezet</option>
+                                <option value="programok">🎪 Programok & Rendezvények</option>
+                                <option value="felszereltseg">🖥️ Felszereltség & Eszközök</option>
+                                <option value="kozosseg">👥 Közösség & Diákélet</option>
+                                <option value="biztonsag">🛡️ Biztonság & Egészség</option>
+                                <option value="egyeb">💡 Egyéb</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="problem">
+                                <span class="label-icon">⚠️</span>
+                                Probléma / Kihívás
+                            </label>
+                            <textarea 
+                                id="problem" 
+                                placeholder="Milyen problémát, nehézséget vagy kihívást tapasztaltál az iskolában? Írd le részletesen..."
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="solution">
+                                <span class="label-icon">💡</span>
+                                Ötlet / Megoldási javaslat
+                            </label>
+                            <textarea 
+                                id="solution" 
+                                placeholder="Mi lenne a megoldás? Hogyan lehetne javítani a helyzeten? Írd le az ötleted..."
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="email">
+                                <span class="label-icon">📧</span>
+                                Email cím (visszajelzéshez)
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                placeholder="pelda@iskola.hu"
+                                required
+                            >
+                            <span class="field-hint">Az ötleted állapotáról emailben értesítünk</span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="addIdeaBtn" class="btn-primary">
+                            <span class="plus-icon">+</span> 
+                            Ötlet beküldése
+                        </button>
+                        <button type="reset" class="btn-secondary">
+                            Űrlap törlése
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            
+            <div class="filter-section">
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-filter="all">🔍 Minden bejegyzés</button>
+                    <button class="filter-btn" data-filter="oktatas">📚 Oktatás</button>
+                    <button class="filter-btn" data-filter="kornyezet">🏫 Környezet</button>
+                    <button class="filter-btn" data-filter="programok">🎪 Programok</button>
+                    <button class="filter-btn" data-filter="felszereltseg">🖥️ Eszközök</button>
+                    <button class="filter-btn" data-filter="kozosseg">👥 Közösség</button>
+                    <button class="filter-btn" data-filter="biztonsag">🛡️ Biztonság</button>
+                    <button class="filter-btn" data-filter="egyeb">💡 Egyéb</button>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-label">📊 Beküldött ötletek:</span>
+                        <span class="stat-number" id="totalIdeas">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">✅ Megvalósítva:</span>
+                        <span class="stat-number" id="completedIdeas">0</span>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="ideas-grid" id="ideasGrid">
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
