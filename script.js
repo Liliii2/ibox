@@ -1,145 +1,219 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ibox – Iskolai Ötletdoboz</title>
+/* ============================================
+   ibox – Iskolai Ötletdoboz
+   Kész, működő változat 🔥
+   ============================================ */
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
+const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="school-badge">
-                <img src="gepesz_alap_5d3a12540c.png" alt="Iskola logó" class="badge-icon">
-            </div>
+const firebaseConfig = {
+    apiKey: "AIzaSyAmPRB7bhK1YZiRIqCrSbGsQ79glscIDhA",
+    authDomain: "ibox-73955.firebaseapp.com",
+    databaseURL: "https://ibox-73955-default-rtdb.firebaseio.com",
+    projectId: "ibox-73955",
+    storageBucket: "ibox-73955.firebasestorage.app",
+    messagingSenderId: "441138699068",
+    appId: "1:441138699068:web:4e1b0ec477e1a2d7ef1c39"
+};
 
-            <div class="motto">"Ne csak panaszkodj, tegyél is érte!"</div>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const OTLETEK_REF = db.ref("otletek");
 
-            <h1>ibox</h1>
-            <p class="subtitle">🎒 Iskolai Ötletdoboz · Láttál problémát? Van megoldási ötleted? Oszd meg velünk!</p>
-        </header>
+let otletek = [];
+let aktivSzuro = "all";
 
-        <div class="idea-box">
+const KATEGORIAK = {
+    oktatas:       { ikon: "📚", nev: "Oktatás & Tanulás" },
+    kornyezet:     { ikon: "🏫", nev: "Iskolai környezet" },
+    programok:     { ikon: "🎪", nev: "Programok & Rendezvények" },
+    felszereltseg: { ikon: "🖥️", nev: "Felszereltség & Eszközök" },
+    kozosseg:      { ikon: "👥", nev: "Közösség & Diákélet" },
+    biztonsag:     { ikon: "🛡️", nev: "Biztonság & Egészség" },
+    egyeb:         { ikon: "💡", nev: "Egyéb" }
+};
 
-            <div class="input-section">
-                <div class="input-header">
-                    <h2>📮 Új ötlet beküldése</h2>
-                    <span class="badge">Diákok és Tanárok</span>
-                </div>
+document.addEventListener("DOMContentLoaded", () => {
+    adatbazisFigyelese();
+    szuroGombokBeallitasa();
+    urlapKezeles();
+});
 
-                <form id="ideaForm">
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="category">
-                                <span class="label-icon">📌</span>
-                                Kategória
-                            </label>
-                            <select id="category" required>
-                                <option value="" disabled selected>-- Válassz kategóriát --</option>
-                                <option value="oktatas">📚 Oktatás & Tanulás</option>
-                                <option value="kornyezet">🏫 Iskolai környezet</option>
-                                <option value="programok">🎪 Programok & Rendezvények</option>
-                                <option value="felszereltseg">🖥️ Felszereltség & Eszközök</option>
-                                <option value="kozosseg">👥 Közösség & Diákélet</option>
-                                <option value="biztonsag">🛡️ Biztonság & Egészség</option>
-                                <option value="egyeb">💡 Egyéb</option>
-                            </select>
-                        </div>
-                    </div>
+function adatbazisFigyelese() {
+    OTLETEK_REF.on("value", (snapshot) => {
+        const adat = snapshot.val() || {};
+        otletek = Object.entries(adat).map(([kulcs, ertek]) => ({
+            firebaseKey: kulcs,
+            ...ertek
+        }));
+        otletek.sort((a, b) => new Date(b.datum) - new Date(a.datum));
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="problem">
-                                <span class="label-icon">⚠️</span>
-                                Probléma / Kihívás
-                            </label>
-                            <textarea
-                                id="problem"
-                                placeholder="Milyen problémát, nehézséget vagy kihívást tapasztaltál az iskolában? Írd le részletesen..."
-                                rows="3"
-                                required
-                            ></textarea>
-                        </div>
-                    </div>
+        otletekMegjelenitese();
+        statisztikaFrissitese();
+    }, (hiba) => {
+        console.error("❌ Adatbázis hiba:", hiba);
+        toast("⚠️ Nem sikerült az adatbázishoz csatlakozni.");
+    });
+}
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="solution">
-                                <span class="label-icon">💡</span>
-                                Ötlet / Megoldási javaslat
-                            </label>
-                            <textarea
-                                id="solution"
-                                placeholder="Mi lenne a megoldás? Hogyan lehetne javítani a helyzeten? Írd le az ötleted..."
-                                rows="3"
-                                required
-                            ></textarea>
-                        </div>
-                    </div>
+function urlapKezeles() {
+    const form = document.getElementById("ideaForm");
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label for="email">
-                                <span class="label-icon">📧</span>
-                                Email cím (visszajelzéshez)
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder="pelda@iskola.hu"
-                                required
-                            >
-                            <span class="field-hint">Az ötleted állapotáról emailben értesítünk</span>
-                        </div>
-                    </div>
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-                    <div class="form-actions">
-                        <button type="submit" id="addIdeaBtn" class="btn-primary">
-                            <span class="plus-icon">+</span>
-                            Ötlet beküldése
-                        </button>
-                        <button type="reset" class="btn-secondary">
-                            Űrlap törlése
-                        </button>
-                    </div>
-                </form>
-            </div>
+        const ujOtlet = {
+            kategoria: document.getElementById("category").value,
+            problema:  document.getElementById("problem").value.trim(),
+            megoldas:  document.getElementById("solution").value.trim(),
+            email:     document.getElementById("email").value.trim(),
+            datum:     new Date().toISOString(),
+            kesz:      false
+        };
 
-            <div class="filter-section">
-                <div class="filter-tabs">
-                    <button class="filter-btn active" data-filter="all">🔍 Minden bejegyzés</button>
-                    <button class="filter-btn" data-filter="oktatas">📚 Oktatás</button>
-                    <button class="filter-btn" data-filter="kornyezet">🏫 Környezet</button>
-                    <button class="filter-btn" data-filter="programok">🎪 Programok</button>
-                    <button class="filter-btn" data-filter="felszereltseg">🖥️ Eszközök</button>
-                    <button class="filter-btn" data-filter="kozosseg">👥 Közösség</button>
-                    <button class="filter-btn" data-filter="biztonsag">🛡️ Biztonság</button>
-                    <button class="filter-btn" data-filter="egyeb">💡 Egyéb</button>
-                </div>
+        OTLETEK_REF.push(ujOtlet)
+            .then(() => {
+                form.reset();
+                toast("✅ Az ötleted közzé lett téve!");
+            })
+            .catch((hiba) => {
+                console.error("❌ Mentési hiba:", hiba);
+                toast("⚠️ Nem sikerült beküldeni az ötletet.");
+            });
 
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-label">📊 Beküldött ötletek:</span>
-                        <span class="stat-number" id="totalIdeas">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">✅ Megvalósítva:</span>
-                        <span class="stat-number" id="completedIdeas">0</span>
-                    </div>
-                </div>
-            </div>
+        emailKuldes(ujOtlet);
+    });
+}
 
-            <div class="ideas-grid" id="ideasGrid"></div>
+async function emailKuldes(otlet) {
+    if (!KULDETO_EMAIL) return;
+
+    try {
+        const valasz = await fetch(`https://formsubmit.co/ajax/${KULDETO_EMAIL}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                _captcha: "false",
+                _subject: "💡 Új ötlet érkezett az iboxba!",
+                _template: "table",
+                "Kategória": KATEGORIAK[otlet.kategoria].nev,
+                "Probléma": otlet.problema,
+                "Megoldási ötlet": otlet.megoldas,
+                "Beküldő e-mail címe": otlet.email,
+                "Dátum": datumFormazas(otlet.datum)
+            })
+        });
+
+        const adat = await valasz.json();
+        console.log("📩 FormSubmit válasz:", adat);
+    } catch (hiba) {
+        console.error("❌ E-mail küldési hiba:", hiba);
+    }
+}
+
+function otletekMegjelenitese() {
+    const grid = document.getElementById("ideasGrid");
+    let lista = otletek;
+
+    if (aktivSzuro !== "all") {
+        lista = lista.filter(o => o.kategoria === aktivSzuro);
+    }
+
+    if (lista.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-emoji">📭</div>
+                <h3>Még nincs itt ötlet</h3>
+                <p>Légy te az első! Küldj be egy ötletet a fenti űrlappal, és itt fog megjelenni.</p>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = lista.map(kartyaLetrehozas).join("");
+}
+
+function kartyaLetrehozas(o) {
+    const k = KATEGORIAK[o.kategoria] || KATEGORIAK.egyeb;
+    return `
+    <div class="idea-card ${o.kesz ? "completed" : ""}" data-category="${o.kategoria}" data-id="${o.firebaseKey}">
+        ${o.kesz ? '<span class="completed-badge">✅ Megvalósítva</span>' : ""}
+        <div class="idea-header">
+            <span class="category-badge">${k.ikon} ${k.nev}</span>
+            <span class="email-badge">📧 ${biztonsagosSzoveg(o.email)}</span>
         </div>
-    </div>
+        <div class="problem-section">
+            <div class="problem-label">⚠️ Probléma / Kihívás</div>
+            <div class="problem-text">${biztonsagosSzoveg(o.problema)}</div>
+        </div>
+        <div class="solution-section">
+            <div class="solution-label">💡 Megoldási ötlet</div>
+            <div class="solution-text">${biztonsagosSzoveg(o.megoldas)}</div>
+        </div>
+        <div class="idea-footer">
+            <span class="idea-date">🕒 ${datumFormazas(o.datum)}</span>
+            <div class="idea-actions">
+                <button class="complete-btn ${o.kesz ? "completed" : ""}" title="Megvalósítottnak jelölés">✓</button>
+                <button class="delete-btn" title="Törlés">✕</button>
+            </div>
+        </div>
+    </div>`;
+}
 
-    <div id="toast" class="toast"></div>
+function szuroGombokBeallitasa() {
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelector(".filter-btn.active").classList.remove("active");
+            btn.classList.add("active");
+            aktivSzuro = btn.dataset.filter;
+            otletekMegjelenitese();
+        });
+    });
+}
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+document.getElementById("ideasGrid").addEventListener("click", (e) => {
+    const kartya = e.target.closest(".idea-card");
+    if (!kartya) return;
+
+    const id = kartya.dataset.id;
+
+    if (e.target.closest(".delete-btn")) {
+        if (confirm("Biztosan törlöd ezt az ötletet?")) {
+            OTLETEK_REF.child(id).remove();
+            toast("🗑️ Az ötlet törölve.");
+        }
+    } else if (e.target.closest(".complete-btn")) {
+        const otlet = otletek.find(o => o.firebaseKey === id);
+        if (otlet) {
+            OTLETEK_REF.child(id).update({ kesz: !otlet.kesz });
+        }
+    }
+});
+
+function statisztikaFrissitese() {
+    document.getElementById("totalIdeas").textContent = otletek.length;
+    document.getElementById("completedIdeas").textContent = otletek.filter(o => o.kesz).length;
+}
+
+function biztonsagosSzoveg(szoveg) {
+    const div = document.createElement("div");
+    div.textContent = szoveg;
+    return div.innerHTML;
+}
+
+function datumFormazas(iso) {
+    return new Date(iso).toLocaleString("hu-HU", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit"
+    });
+}
+
+let toastIdo;
+function toast(uzenet) {
+    const t = document.getElementById("toast");
+    t.textContent = uzenet;
+    t.classList.add("show");
+    clearTimeout(toastIdo);
+    toastIdo = setTimeout(() => t.classList.remove("show"), 3500);
+}
