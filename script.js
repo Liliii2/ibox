@@ -2,10 +2,10 @@
    ibox – Iskolai Ötletdoboz
    ============================================ */
 
-// ⚠️ 1. ÍRD BE IDE AZ E-MAIL CÍMED, ahova az ötletek menjenek:
-const KULDETO_EMAIL = "school.ibox.office@gmail.com"; // pl.: "ibox@iskolahu"  ← ha üres, csak közzététel történik
+// ✅ BEÁLLÍTOTT E-MAIL CÍM:
+const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-// 2. Mentési kulcs (localStorage)
+// Mentési kulcs (localStorage)
 const TAROLO_KULCS = "ibox_otletek";
 
 // Kategóriák adatai
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     urlapKezeles();
 });
 
-// ===== MENTÉS / BETÖLTÉS (localStorage – frissítés után is megmarad!) =====
+// ===== MENTÉS / BETÖLTÉS =====
 function otletekBetoltese() {
     try {
         return JSON.parse(localStorage.getItem(TAROLO_KULCS)) || [];
@@ -60,7 +60,7 @@ function urlapKezeles() {
         };
 
         const lista = otletekBetoltese();
-        lista.unshift(ujOtlet); // legújabb felülre
+        lista.unshift(ujOtlet);
         otletekMentese(lista);
 
         otletekMegjelenitese();
@@ -73,10 +73,10 @@ function urlapKezeles() {
     });
 }
 
-// ===== E-MAIL KÜLDÉS (FormSubmit – ingyenes szolgáltatás) =====
+// ===== E-MAIL KÜLDÉS (FormSubmit) =====
 async function emailKuldes(otlet) {
     if (!KULDETO_EMAIL) {
-        console.info("E-mail küldés: írd be a címedet a script.js elején (KULDETO_EMAIL).");
+        console.warn("❌ E-mail nincs beállítva!");
         return;
     }
 
@@ -88,6 +88,7 @@ async function emailKuldes(otlet) {
                 "Accept": "application/json"
             },
             body: JSON.stringify({
+                _captcha: "false",
                 _subject: "💡 Új ötlet érkezett az iboxba!",
                 _template: "table",
                 "Kategória": KATEGORIAK[otlet.kategoria].nev,
@@ -98,13 +99,17 @@ async function emailKuldes(otlet) {
             })
         });
 
+        const adat = await valasz.json();
+        console.log("📩 FormSubmit válasz:", adat);
+
         if (valasz.ok) {
             toast("📧 Az ötlet elmentve és elküldve e-mailben is!");
         } else {
-            throw new Error("Küldési hiba");
+            throw new Error(adat.message || "Ismeretlen hiba");
         }
-    } catch {
-        toast("⚠️ Az ötlet közzé lett téve, de az e-mail küldése nem sikerült.");
+    } catch (hiba) {
+        console.error("❌ E-mail küldési hiba:", hiba);
+        toast("⚠️ Az ötlet közzé lett téve, de az e-mail nem ment el.");
     }
 }
 
@@ -169,7 +174,7 @@ function szuroGombokBeallitasa() {
     });
 }
 
-// ===== KÁRTYA GOMBOK (kész / törlés) =====
+// ===== KÁRTYA GOMBOK =====
 document.getElementById("ideasGrid").addEventListener("click", (e) => {
     const kartya = e.target.closest(".idea-card");
     if (!kartya) return;
