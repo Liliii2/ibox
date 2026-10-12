@@ -3,7 +3,7 @@
    ============================================ */
 
 // ⚠️ 1. ÍRD BE IDE AZ E-MAIL CÍMED, ahova az ötletek menjenek:
-const KULDETO_EMAIL = ""; // pl.: "ibox@iskolahu"  ← ha üres, csak közzététel történik
+const KULDETO_EMAIL = "sajat@email.hu"; // pl.: "ibox@iskolahu"  ← ha üres, csak közzététel történik
 
 // 2. Mentési kulcs (localStorage)
 const TAROLO_KULCS = "ibox_otletek";
