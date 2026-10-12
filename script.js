@@ -6,15 +6,15 @@
 // ✅ BEÁLLÍTOTT E-MAIL CÍM:
 const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-// 🔥 IDE MÁSOLD BE A SAJÁT firebaseConfig-odat (a Firebase konzolból):
+// 🔥 Firebase config (SAJÁT, működő!)
 const firebaseConfig = {
-    apiKey: "IDEBETENNI",
-    authDomain: "IDEBETENNI",
-    databaseURL: "IDEBETENNI",
-    projectId: "IDEBETENNI",
-    storageBucket: "IDEBETENNI",
-    messagingSenderId: "IDEBETENNI",
-    appId: "IDEBETENNI"
+    apiKey: "AIzaSyAmPRB7bhK1YZiRIqCrSbGsQ79glscIDhA",
+    authDomain: "ibox-73955.firebaseapp.com",
+    databaseURL: "https://ibox-73955-default-rtdb.europe-west1.firebasedatabase.app", // ⚠️ ELLENŐRIZD! Másold be ide a saját címedet!
+    projectId: "ibox-73955",
+    storageBucket: "ibox-73955.firebasestorage.app",
+    messagingSenderId: "441138699068",
+    appId: "1:441138699068:web:4e1b0ec477e1a2d7ef1c39"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -37,13 +37,12 @@ const KATEGORIAK = {
 
 // ===== INDULÁS =====
 document.addEventListener("DOMContentLoaded", () => {
-    adatbazisFigyelese();      // élő figyelés: ha bárki beküld, mindenkinek frissül!
+    adatbazisFigyelese();
     szuroGombokBeallitasa();
     urlapKezeles();
 });
 
 // ===== ÉLŐ ADATBÁZIS-FIGYELÉS =====
-// Ez a függvény mindig lefut, ha bárki hozzáad / módosít / töröl ötletet.
 function adatbazisFigyelese() {
     OTLETEK_REF.on("value", (snapshot) => {
         const adat = snapshot.val() || {};
@@ -51,7 +50,6 @@ function adatbazisFigyelese() {
             firebaseKey: kulcs,
             ...ertek
         }));
-        // Legújabb felülre
         otletek.sort((a, b) => new Date(b.datum) - new Date(a.datum));
 
         otletekMegjelenitese();
@@ -78,7 +76,6 @@ function urlapKezeles() {
             kesz:      false
         };
 
-        // Beküldés a KÖZÖS adatbázisba → mindenkinél megjelenik!
         OTLETEK_REF.push(ujOtlet)
             .then(() => {
                 form.reset();
@@ -189,7 +186,7 @@ document.getElementById("ideasGrid").addEventListener("click", (e) => {
     const kartya = e.target.closest(".idea-card");
     if (!kartya) return;
 
-    const id = kartya.dataset.id; // Firebase kulcs (szöveg)
+    const id = kartya.dataset.id;
 
     if (e.target.closest(".delete-btn")) {
         if (confirm("Biztosan törlöd ezt az ötletet?")) {
