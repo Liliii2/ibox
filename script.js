@@ -6,11 +6,11 @@
 // ✅ BEÁLLÍTOTT E-MAIL CÍM:
 const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-// 🔥 Firebase config (SAJÁT, működő!)
+// 🔥 Firebase config (KÉSZ!)
 const firebaseConfig = {
     apiKey: "AIzaSyAmPRB7bhK1YZiRIqCrSbGsQ79glscIDhA",
     authDomain: "ibox-73955.firebaseapp.com",
-    databaseURL: "https://ibox-73955-default-rtdb.europe-west1.firebasedatabase.app", // ⚠️ ELLENŐRIZD! Másold be ide a saját címedet!
+    databaseURL: "https://ibox-73955-default-rtdb.firebaseio.com",
     projectId: "ibox-73955",
     storageBucket: "ibox-73955.firebasestorage.app",
     messagingSenderId: "441138699068",
