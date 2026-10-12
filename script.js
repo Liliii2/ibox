@@ -1,12 +1,28 @@
 /* ============================================
    ibox – Iskolai Ötletdoboz
+   Közös adatbázis: Firebase Realtime Database
    ============================================ */
 
 // ✅ BEÁLLÍTOTT E-MAIL CÍM:
 const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-// Mentési kulcs (localStorage)
-const TAROLO_KULCS = "ibox_otletek";
+// 🔥 IDE MÁSOLD BE A SAJÁT firebaseConfig-odat (a Firebase konzolból):
+const firebaseConfig = {
+    apiKey: "IDEBETENNI",
+    authDomain: "IDEBETENNI",
+    databaseURL: "IDEBETENNI",
+    projectId: "IDEBETENNI",
+    storageBucket: "IDEBETENNI",
+    messagingSenderId: "IDEBETENNI",
+    appId: "IDEBETENNI"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const OTLETEK_REF = db.ref("otletek");
+
+let otletek = [];          // aktuális ötletlista (az adatbázisból)
+let aktivSzuro = "all";    // szűrő állapota
 
 // Kategóriák adatai
 const KATEGORIAK = {
@@ -19,27 +35,31 @@ const KATEGORIAK = {
     egyeb:         { ikon: "💡", nev: "Egyéb" }
 };
 
-let aktivSzuro = "all";
-
 // ===== INDULÁS =====
 document.addEventListener("DOMContentLoaded", () => {
-    otletekMegjelenitese();
-    statisztikaFrissitese();
+    adatbazisFigyelese();      // élő figyelés: ha bárki beküld, mindenkinek frissül!
     szuroGombokBeallitasa();
     urlapKezeles();
 });
 
-// ===== MENTÉS / BETÖLTÉS =====
-function otletekBetoltese() {
-    try {
-        return JSON.parse(localStorage.getItem(TAROLO_KULCS)) || [];
-    } catch {
-        return [];
-    }
-}
+// ===== ÉLŐ ADATBÁZIS-FIGYELÉS =====
+// Ez a függvény mindig lefut, ha bárki hozzáad / módosít / töröl ötletet.
+function adatbazisFigyelese() {
+    OTLETEK_REF.on("value", (snapshot) => {
+        const adat = snapshot.val() || {};
+        otletek = Object.entries(adat).map(([kulcs, ertek]) => ({
+            firebaseKey: kulcs,
+            ...ertek
+        }));
+        // Legújabb felülre
+        otletek.sort((a, b) => new Date(b.datum) - new Date(a.datum));
 
-function otletekMentese(lista) {
-    localStorage.setItem(TAROLO_KULCS, JSON.stringify(lista));
+        otletekMegjelenitese();
+        statisztikaFrissitese();
+    }, (hiba) => {
+        console.error("❌ Adatbázis hiba:", hiba);
+        toast("⚠️ Nem sikerült az adatbázishoz csatlakozni.");
+    });
 }
 
 // ===== ŰRLAP BEKÜLDÉSE =====
@@ -50,7 +70,6 @@ function urlapKezeles() {
         e.preventDefault();
 
         const ujOtlet = {
-            id: Date.now(),
             kategoria: document.getElementById("category").value,
             problema:  document.getElementById("problem").value.trim(),
             megoldas:  document.getElementById("solution").value.trim(),
@@ -59,15 +78,16 @@ function urlapKezeles() {
             kesz:      false
         };
 
-        const lista = otletekBetoltese();
-        lista.unshift(ujOtlet);
-        otletekMentese(lista);
-
-        otletekMegjelenitese();
-        statisztikaFrissitese();
-        form.reset();
-
-        toast("✅ Az ötleted sikeresen közzé lett téve!");
+        // Beküldés a KÖZÖS adatbázisba → mindenkinél megjelenik!
+        OTLETEK_REF.push(ujOtlet)
+            .then(() => {
+                form.reset();
+                toast("✅ Az ötleted közzé lett téve!");
+            })
+            .catch((hiba) => {
+                console.error("❌ Mentési hiba:", hiba);
+                toast("⚠️ Nem sikerült beküldeni az ötletet.");
+            });
 
         emailKuldes(ujOtlet);
     });
@@ -75,10 +95,7 @@ function urlapKezeles() {
 
 // ===== E-MAIL KÜLDÉS (FormSubmit) =====
 async function emailKuldes(otlet) {
-    if (!KULDETO_EMAIL) {
-        console.warn("❌ E-mail nincs beállítva!");
-        return;
-    }
+    if (!KULDETO_EMAIL) return;
 
     try {
         const valasz = await fetch(`https://formsubmit.co/ajax/${KULDETO_EMAIL}`, {
@@ -101,22 +118,15 @@ async function emailKuldes(otlet) {
 
         const adat = await valasz.json();
         console.log("📩 FormSubmit válasz:", adat);
-
-        if (valasz.ok) {
-            toast("📧 Az ötlet elmentve és elküldve e-mailben is!");
-        } else {
-            throw new Error(adat.message || "Ismeretlen hiba");
-        }
     } catch (hiba) {
         console.error("❌ E-mail küldési hiba:", hiba);
-        toast("⚠️ Az ötlet közzé lett téve, de az e-mail nem ment el.");
     }
 }
 
 // ===== MEGJELENÍTÉS =====
 function otletekMegjelenitese() {
     const grid = document.getElementById("ideasGrid");
-    let lista = otletekBetoltese();
+    let lista = otletek;
 
     if (aktivSzuro !== "all") {
         lista = lista.filter(o => o.kategoria === aktivSzuro);
@@ -138,7 +148,7 @@ function otletekMegjelenitese() {
 function kartyaLetrehozas(o) {
     const k = KATEGORIAK[o.kategoria] || KATEGORIAK.egyeb;
     return `
-    <div class="idea-card ${o.kesz ? "completed" : ""}" data-category="${o.kategoria}" data-id="${o.id}">
+    <div class="idea-card ${o.kesz ? "completed" : ""}" data-category="${o.kategoria}" data-id="${o.firebaseKey}">
         ${o.kesz ? '<span class="completed-badge">✅ Megvalósítva</span>' : ""}
         <div class="idea-header">
             <span class="category-badge">${k.ikon} ${k.nev}</span>
@@ -174,37 +184,30 @@ function szuroGombokBeallitasa() {
     });
 }
 
-// ===== KÁRTYA GOMBOK =====
+// ===== KÁRTYA GOMBOK (kész / törlés) =====
 document.getElementById("ideasGrid").addEventListener("click", (e) => {
     const kartya = e.target.closest(".idea-card");
     if (!kartya) return;
 
-    const id = Number(kartya.dataset.id);
+    const id = kartya.dataset.id; // Firebase kulcs (szöveg)
 
     if (e.target.closest(".delete-btn")) {
         if (confirm("Biztosan törlöd ezt az ötletet?")) {
-            otletekMentese(otletekBetoltese().filter(o => o.id !== id));
-            otletekMegjelenitese();
-            statisztikaFrissitese();
+            OTLETEK_REF.child(id).remove();
             toast("🗑️ Az ötlet törölve.");
         }
     } else if (e.target.closest(".complete-btn")) {
-        const lista = otletekBetoltese();
-        const otlet = lista.find(o => o.id === id);
+        const otlet = otletek.find(o => o.firebaseKey === id);
         if (otlet) {
-            otlet.kesz = !otlet.kesz;
-            otletekMentese(lista);
-            otletekMegjelenitese();
-            statisztikaFrissitese();
+            OTLETEK_REF.child(id).update({ kesz: !otlet.kesz });
         }
     }
 });
 
 // ===== STISZTIKA =====
 function statisztikaFrissitese() {
-    const lista = otletekBetoltese();
-    document.getElementById("totalIdeas").textContent = lista.length;
-    document.getElementById("completedIdeas").textContent = lista.filter(o => o.kesz).length;
+    document.getElementById("totalIdeas").textContent = otletek.length;
+    document.getElementById("completedIdeas").textContent = otletek.filter(o => o.kesz).length;
 }
 
 // ===== SEGÉDFÜGGVÉNYEK =====
