@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ibox – Iskolai Ötletdoboz</title>
 
+    <!-- Favicon (emoji, nem kell képfájl) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
 
     <link rel="stylesheet" href="style.css">
@@ -12,13 +13,17 @@
 <body>
     <div class="container">
         <header>
+            <!-- Admin gomb (jobb felső sarok) -->
+            <button id="adminBtn" class="admin-btn" title="Admin belépés">🔒</button>
+
             <div class="school-badge">
                 <img src="gepesz_alap_5d3a12540c.png" alt="Iskola logó" class="badge-icon">
             </div>
 
+            <!-- Mottó feljebb, a cím alá került -->
             <div class="motto">"Ne csak panaszkodj, tegyél is érte!"</div>
 
-            <h1>iBox</h1>
+            <h1>ibox</h1>
             <p class="subtitle">🎒 Iskolai Ötletdoboz · Láttál problémát? Van megoldási ötleted? Oszd meg velünk!</p>
         </header>
 
@@ -136,8 +141,10 @@
         </div>
     </div>
 
+    <!-- Értesítés (toast) -->
     <div id="toast" class="toast"></div>
 
+    <!-- Firebase (közös adatbázis) + saját kód -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="script.js"></script>
