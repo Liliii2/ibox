@@ -1,13 +1,14 @@
 /* ============================================
    ibox – Iskolai Ötletdoboz
-   ötletek + kommentek + like/dislike 🔥
+   Minden funkcióval 🔥
    ============================================ */
 
 const KULDETO_EMAIL = "school.ibox.office@gmail.com";
 
-// 👑 ADMIN JELSZÓ
+// 👑 ADMIN JELSZÓ – írd át, mielőtt kiosztod!
 const ADMIN_JELSZO = "ibox2025";
 
+// 🔥 Firebase kapcsolat
 const firebaseConfig = {
     apiKey: "AIzaSyAmPRB7bhK1YZiRIqCrSbGsQ79glscIDhA",
     authDomain: "ibox-73955.firebaseapp.com",
@@ -24,7 +25,7 @@ const OTLETEK_REF = db.ref("otletek");
 
 let otletek = [];
 let aktivSzuro = "all";
-let nyitottKommentek = new Set();  // melyik kártyánál van nyitva a komment-szekció
+let nyitottKommentek = new Set();  // mely kártyáknál van nyitva a komment-szekció
 
 const KATEGORIAK = {
     oktatas:       { ikon: "📚", nev: "Oktatás & Tanulás" },
@@ -46,14 +47,17 @@ const KAROMKODASOK = [
     "pula","curva","kokot","kurac"
 ];
 
+/* Más ábécéből "álcázott" betűk átváltása (kurvα, curvа stb.) */
 const ATEIRASI_TABLA = {
     "α":"a","ο":"o","ε":"e","ι":"i","κ":"k","ρ":"p","τ":"t","υ":"u","χ":"x","ν":"v","μ":"m","σ":"s","β":"b",
     "а":"a","е":"e","о":"o","р":"p","с":"c","у":"y","х":"x","і":"i","ѕ":"s","к":"k","м":"m","т":"t","в":"b","н":"h","д":"d"
 };
 
+/* Csak magyar betűk, számok, normál írásjelek engedélyezettek */
 const ENGEDELYEZETT_MINTA = /^[a-zA-Z0-9áéíóöőúüűÁÉÍÓÖŐÚÜŰ\s.,!?;:%()'"„”+\-*=@#&_\/–—]+$/;
 
 function karakterEllenorzes(szoveg) {
+    // emojikat kiszedjük (azok oké), aztán nézzük, maradt-e tiltott karakter
     const emojiNelkul = szoveg.replace(
         /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B00}-\u{2BFF}]/gu,
         ""
@@ -247,7 +251,7 @@ function otletekMegjelenitese() {
         lista = lista.filter(o => o.kategoria === aktivSzuro);
     }
 
-    // beírt, még el nem küldött hozzászólások megőrzése újrarajzoláskor
+    // félbehagyott hozzászólások megőrzése újrarajzoláskor
     const mentettSzovegek = {};
     grid.querySelectorAll(".komment-input").forEach(inp => {
         const kartya = inp.closest(".idea-card");
@@ -268,7 +272,6 @@ function otletekMegjelenitese() {
 
     grid.innerHTML = lista.map(kartyaLetrehozas).join("");
 
-    // visszatöltjük a félbehagyott hozzászólásokat
     Object.entries(mentettSzovegek).forEach(([id, szoveg]) => {
         const inp = grid.querySelector(`.idea-card[data-id="${id}"] .komment-input`);
         if (inp) inp.value = szoveg;
@@ -364,7 +367,7 @@ function szuroGombokBeallitasa() {
     });
 }
 
-/* ===== KÁRTYA KATTINTÁSOK (like, dislike, komment, törlés) ===== */
+/* ===== KÁRTYA KATTINTÁSOK ===== */
 document.getElementById("ideasGrid").addEventListener("click", (e) => {
     const kartya = e.target.closest(".idea-card");
     if (!kartya) return;
@@ -377,9 +380,9 @@ document.getElementById("ideasGrid").addEventListener("click", (e) => {
     if (e.target.closest(".like-btn")) {
         const ref = OTLETEK_REF.child(id).child("reakciok").child(sajatSzerzoId());
         if (sajatReakcio(otlet) === "like") {
-            ref.remove();          // visszavonjuk a like-ot
+            ref.remove();
         } else {
-            ref.set("like");       // vagy like-ra váltjuk
+            ref.set("like");
         }
         return;
     }
@@ -467,7 +470,7 @@ document.getElementById("ideasGrid").addEventListener("submit", (e) => {
         return;
     }
 
-    input.value = ""; // сразу ürítjük, hogy újrarajzoláskor ne maradjon bent
+    input.value = "";
 
     OTLETEK_REF.child(id).child("kommentek").push({
         szoveg:   szoveg,
