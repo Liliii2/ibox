@@ -81,6 +81,10 @@ header::before {
     border-color: #f59e0b;
     box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
 }
+.vissza-btn{
+    text-decoration: none;
+    text: purple;
+}
 
 /* ===== LOGÓ, MOTTÓ, CÍM ===== */
 .school-badge {
@@ -231,7 +235,7 @@ input:focus, select:focus, textarea:focus {
     flex-wrap: wrap;
 }
 
-.btn-primary {
+.-primary {
     background: linear-gradient(145deg, var(--fo-szin), var(--fo-szin-sotet));
     color: white;
     border: none;
@@ -248,12 +252,12 @@ input:focus, select:focus, textarea:focus {
     justify-content: center;
 }
 
-.btn-primary:hover {
+.-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 20px 30px rgba(99, 102, 241, 0.35);
 }
 
-.btn-secondary {
+.-secondary {
     background: white;
     color: var(--szoveg);
     border: 2px solid var(--keret);
@@ -265,7 +269,7 @@ input:focus, select:focus, textarea:focus {
     transition: all 0.3s ease;
 }
 
-.btn-secondary:hover {
+.-secondary:hover {
     background: #eef2ff;
     border-color: var(--fo-szin);
 }
@@ -293,7 +297,7 @@ input:focus, select:focus, textarea:focus {
     flex-wrap: wrap;
 }
 
-.filter-btn {
+.filter- {
     padding: 8px 18px;
     border: 2px solid var(--keret);
     background: white;
@@ -305,13 +309,13 @@ input:focus, select:focus, textarea:focus {
     font-weight: 500;
 }
 
-.filter-btn:hover {
+.filter-:hover {
     background: #eef2ff;
     border-color: var(--fo-szin);
     color: var(--fo-szin-sotet);
 }
 
-.filter-btn.active {
+.filter-.active {
     background: linear-gradient(145deg, var(--fo-szin), var(--fo-szin-sotet));
     color: white;
     border-color: transparent;
