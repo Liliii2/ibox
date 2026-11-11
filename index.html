@@ -1,51 +1,113 @@
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>iBox – Iskolai Ötletdoboz</title>
 
-    <!-- Favicon (emoji, nem kell képfájl) -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
 
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Vissza gomb stílusa -->
+    <style>
+        .vissza-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: linear-gradient(145deg, #6366f1, #4f46e5);
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            box-shadow: 0 6px 15px rgba(99, 102, 241, 0.20);
+            transition: all 0.3s ease;
+        }
+
+        .vissza-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(145deg, #4f46e5, #7c3aed);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.30);
+        }
+
+        .vissza-btn span {
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .vissza-btn:hover span {
+            transform: translateX(-4px);
+        }
+    </style>
 </head>
+
 <body>
+
     <div class="container">
+
         <header>
-            <!-- Admin gomb (jobb felső sarok) -->
-            <button id="adminBtn" class="admin-btn" title="Admin belépés">🔒</button>
-        
+
+            <!-- Admin gomb -->
+            <button id="adminBtn" class="admin-btn" title="Admin belépés">
+                🔒
+            </button>
 
             <div class="school-badge">
-                <img src="gepesz_alap_5d3a12540c.png" alt="Iskola logó" class="badge-icon">
+                <img src="gepesz_alap_5d3a12540c.png"
+                     alt="Iskola logó"
+                     class="badge-icon">
             </div>
 
-            <!-- Mottó feljebb, a cím alá került -->
-            <div class="motto">"Ne csak panaszkodj, tegyél érte - iBox, ahol az ötleted érték"</div>
+            <div class="motto">
+                "Ne csak panaszkodj, tegyél érte - iBox, ahol az ötleted érték"
+            </div>
 
             <h1>iBox</h1>
-            <p class="subtitle">🎒 Iskolai Ötletdoboz · Láttál problémát? Van megoldási ötleted? Oszd meg velünk!</p>
-              <button>  <a href="https://liliii2.github.io/ibox_landing/" class="vissza-btn"> Vissza a landing oldalra</a></button>
+
+            <p class="subtitle">
+                🎒 Iskolai Ötletdoboz · Láttál problémát?
+                Van megoldási ötleted? Oszd meg velünk!
+            </p>
+
+            <!-- Vissza a landing oldalra -->
+            <a href="https://liliii2.github.io/ibox_landing/"
+               class="vissza-btn">
+                <span>←</span> Vissza a főoldalra
+            </a>
+
         </header>
 
         <div class="idea-box">
 
             <div class="input-section">
+
                 <div class="input-header">
                     <h2>📮 Új ötlet beküldése</h2>
                     <span class="badge">Diákok és Tanárok</span>
                 </div>
 
                 <form id="ideaForm">
+
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="category">
                                 <span class="label-icon">📌</span>
                                 Kategória
                             </label>
+
                             <select id="category" required>
-                                <option value="" disabled selected>-- Válassz kategóriát --</option>
+                                <option value="" disabled selected>
+                                    -- Válassz kategóriát --
+                                </option>
                                 <option value="oktatas">📚 Oktatás & Tanulás</option>
                                 <option value="kornyezet">🏫 Iskolai környezet</option>
                                 <option value="programok">🎪 Programok & Rendezvények</option>
@@ -63,6 +125,7 @@
                                 <span class="label-icon">⚠️</span>
                                 Probléma / Kihívás
                             </label>
+
                             <textarea
                                 id="problem"
                                 placeholder="Milyen problémát, nehézséget vagy kihívást tapasztaltál az iskolában? Írd le részletesen..."
@@ -78,6 +141,7 @@
                                 <span class="label-icon">💡</span>
                                 Ötlet / Megoldási javaslat
                             </label>
+
                             <textarea
                                 id="solution"
                                 placeholder="Mi lenne a megoldás? Hogyan lehetne javítani a helyzeten? Írd le az ötleted..."
@@ -93,62 +157,109 @@
                                 <span class="label-icon">📧</span>
                                 Email cím (visszajelzéshez)
                             </label>
+
                             <input
                                 type="email"
                                 id="email"
                                 placeholder="pelda@iskola.hu"
                                 required
                             >
-                            <span class="field-hint">Az ötleted állapotáról emailben értesítünk</span>
+
+                            <span class="field-hint">
+                                Az ötleted állapotáról emailben értesítünk
+                            </span>
                         </div>
                     </div>
 
                     <div class="form-actions">
+
                         <button type="submit" id="addIdeaBtn" class="btn-primary">
                             <span class="plus-icon">+</span>
                             Ötlet beküldése
                         </button>
+
                         <button type="reset" class="btn-secondary">
                             Űrlap törlése
                         </button>
+
                     </div>
+
                 </form>
             </div>
 
             <div class="filter-section">
+
                 <div class="filter-tabs">
-                    <button class="filter-btn active" data-filter="all">🔍 Minden bejegyzés</button>
-                    <button class="filter-btn" data-filter="oktatas">📚 Oktatás</button>
-                    <button class="filter-btn" data-filter="kornyezet">🏫 Környezet</button>
-                    <button class="filter-btn" data-filter="programok">🎪 Programok</button>
-                    <button class="filter-btn" data-filter="felszereltseg">🖥️ Eszközök</button>
-                    <button class="filter-btn" data-filter="kozosseg">👥 Közösség</button>
-                    <button class="filter-btn" data-filter="biztonsag">🛡️ Biztonság</button>
-                    <button class="filter-btn" data-filter="egyeb">💡 Egyéb</button>
+
+                    <button class="filter-btn active" data-filter="all">
+                        🔍 Minden bejegyzés
+                    </button>
+
+                    <button class="filter-btn" data-filter="oktatas">
+                        📚 Oktatás
+                    </button>
+
+                    <button class="filter-btn" data-filter="kornyezet">
+                        🏫 Környezet
+                    </button>
+
+                    <button class="filter-btn" data-filter="programok">
+                        🎪 Programok
+                    </button>
+
+                    <button class="filter-btn" data-filter="felszereltseg">
+                        🖥️ Eszközök
+                    </button>
+
+                    <button class="filter-btn" data-filter="kozosseg">
+                        👥 Közösség
+                    </button>
+
+                    <button class="filter-btn" data-filter="biztonsag">
+                        🛡️ Biztonság
+                    </button>
+
+                    <button class="filter-btn" data-filter="egyeb">
+                        💡 Egyéb
+                    </button>
+
                 </div>
 
                 <div class="stats-container">
+
                     <div class="stat-item">
-                        <span class="stat-label">📊 Beküldött ötletek:</span>
+                        <span class="stat-label">
+                            📊 Beküldött ötletek:
+                        </span>
                         <span class="stat-number" id="totalIdeas">0</span>
                     </div>
+
                     <div class="stat-item">
-                        <span class="stat-label">✅ Megvalósítva:</span>
+                        <span class="stat-label">
+                            ✅ Megvalósítva:
+                        </span>
                         <span class="stat-number" id="completedIdeas">0</span>
                     </div>
+
                 </div>
+
             </div>
 
             <div class="ideas-grid" id="ideasGrid"></div>
+
         </div>
+
     </div>
 
-    <!-- Értesítés (toast) -->
+    <!-- Értesítés -->
     <div id="toast" class="toast"></div>
 
-    <!-- Firebase (közös adatbázis) + saját kód -->
+    <!-- Firebase adatbázis -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- Saját JavaScript -->
     <script src="script.js"></script>
+
 </body>
 </html>
