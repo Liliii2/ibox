@@ -1,3 +1,4 @@
+
 /* ===== SZÍNEK ===== */
 :root {
     --fo-szin: #6366f1;
@@ -16,6 +17,7 @@
     box-sizing: border-box;
 }
 
+/* ===== OLDAL ALAPBEÁLLÍTÁSAI ===== */
 body {
     font-family: 'Segoe UI', 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(160deg, #eef2ff 0%, #faf5ff 50%, #ecfeff 100%);
@@ -81,9 +83,44 @@ header::before {
     border-color: #f59e0b;
     box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
 }
-.vissza-btn{
+
+/* ===== VISSZA A LANDING OLDALRA GOMB ===== */
+.vissza-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-top: 25px;
+    padding: 12px 25px;
+
+    background: linear-gradient(145deg, #6366f1, #4f46e5);
+    color: white;
+
     text-decoration: none;
-    text: purple;
+    font-size: 1rem;
+    font-weight: 600;
+
+    border-radius: 50px;
+    border: 2px solid transparent;
+
+    box-shadow: 0 6px 15px rgba(99, 102, 241, 0.20);
+    transition: all 0.3s ease;
+}
+
+.vissza-btn:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(145deg, #4f46e5, #7c3aed);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.30);
+}
+
+.vissza-btn span {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+.vissza-btn:hover span {
+    transform: translateX(-4px);
 }
 
 /* ===== LOGÓ, MOTTÓ, CÍM ===== */
@@ -188,7 +225,9 @@ h1 {
     font-size: 1.1rem;
 }
 
-select, textarea, input {
+select,
+textarea,
+input {
     width: 100%;
     padding: 14px 18px;
     border: 2px solid var(--keret);
@@ -214,7 +253,9 @@ textarea {
     min-height: 100px;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: var(--fo-szin);
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
@@ -235,7 +276,8 @@ input:focus, select:focus, textarea:focus {
     flex-wrap: wrap;
 }
 
-.-primary {
+/* ===== ŰRLAP GOMBOK ===== */
+.btn-primary {
     background: linear-gradient(145deg, var(--fo-szin), var(--fo-szin-sotet));
     color: white;
     border: none;
@@ -252,12 +294,12 @@ input:focus, select:focus, textarea:focus {
     justify-content: center;
 }
 
-.-primary:hover {
+.btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 20px 30px rgba(99, 102, 241, 0.35);
 }
 
-.-secondary {
+.btn-secondary {
     background: white;
     color: var(--szoveg);
     border: 2px solid var(--keret);
@@ -269,7 +311,7 @@ input:focus, select:focus, textarea:focus {
     transition: all 0.3s ease;
 }
 
-.-secondary:hover {
+.btn-secondary:hover {
     background: #eef2ff;
     border-color: var(--fo-szin);
 }
@@ -279,7 +321,7 @@ input:focus, select:focus, textarea:focus {
     font-weight: bold;
 }
 
-/* ===== SZŰRŐ + STISZTIKA ===== */
+/* ===== SZŰRŐ + STATISZTIKA ===== */
 .filter-section {
     display: flex;
     justify-content: space-between;
@@ -297,7 +339,8 @@ input:focus, select:focus, textarea:focus {
     flex-wrap: wrap;
 }
 
-.filter- {
+/* ===== SZŰRŐ GOMBOK ===== */
+.filter-btn {
     padding: 8px 18px;
     border: 2px solid var(--keret);
     background: white;
@@ -309,13 +352,13 @@ input:focus, select:focus, textarea:focus {
     font-weight: 500;
 }
 
-.filter-:hover {
+.filter-btn:hover {
     background: #eef2ff;
     border-color: var(--fo-szin);
     color: var(--fo-szin-sotet);
 }
 
-.filter-.active {
+.filter-btn.active {
     background: linear-gradient(145deg, var(--fo-szin), var(--fo-szin-sotet));
     color: white;
     border-color: transparent;
@@ -372,8 +415,15 @@ input:focus, select:focus, textarea:focus {
 }
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .idea-card:hover {
@@ -381,13 +431,33 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 20px 30px rgba(99, 102, 241, 0.12);
 }
 
-.idea-card[data-category="oktatas"]       { border-top-color: #6366f1; }
-.idea-card[data-category="kornyezet"]     { border-top-color: #10b981; }
-.idea-card[data-category="programok"]     { border-top-color: #f59e0b; }
-.idea-card[data-category="felszereltseg"] { border-top-color: #ef4444; }
-.idea-card[data-category="kozosseg"]      { border-top-color: #a855f7; }
-.idea-card[data-category="biztonsag"]     { border-top-color: #f97316; }
-.idea-card[data-category="egyeb"]         { border-top-color: #64748b; }
+.idea-card[data-category="oktatas"] {
+    border-top-color: #6366f1;
+}
+
+.idea-card[data-category="kornyezet"] {
+    border-top-color: #10b981;
+}
+
+.idea-card[data-category="programok"] {
+    border-top-color: #f59e0b;
+}
+
+.idea-card[data-category="felszereltseg"] {
+    border-top-color: #ef4444;
+}
+
+.idea-card[data-category="kozosseg"] {
+    border-top-color: #a855f7;
+}
+
+.idea-card[data-category="biztonsag"] {
+    border-top-color: #f97316;
+}
+
+.idea-card[data-category="egyeb"] {
+    border-top-color: #64748b;
+}
 
 .idea-header {
     display: flex;
@@ -423,7 +493,7 @@ input:focus, select:focus, textarea:focus {
     border: 1px solid var(--keret);
 }
 
-/* "Az ötleted" jelvény */
+/* ===== SAJÁT ÖTLET JELVÉNY ===== */
 .own-badge {
     font-size: 0.8rem;
     padding: 6px 14px;
@@ -434,6 +504,7 @@ input:focus, select:focus, textarea:focus {
     font-weight: 600;
 }
 
+/* ===== PROBLÉMA ===== */
 .problem-section {
     margin-bottom: 20px;
     padding-bottom: 15px;
@@ -459,6 +530,7 @@ input:focus, select:focus, textarea:focus {
     white-space: pre-wrap;
 }
 
+/* ===== MEGOLDÁSI JAVASLAT ===== */
 .solution-section {
     margin-bottom: 20px;
 }
@@ -482,6 +554,7 @@ input:focus, select:focus, textarea:focus {
     white-space: pre-wrap;
 }
 
+/* ===== ÖTLET KÁRTYA LÁBLÉCE ===== */
 .idea-footer {
     display: flex;
     justify-content: space-between;
@@ -506,7 +579,9 @@ input:focus, select:focus, textarea:focus {
     gap: 10px;
 }
 
-.complete-btn, .delete-btn {
+/* ===== MEGVALÓSÍTÁS ÉS TÖRLÉS GOMB ===== */
+.complete-btn,
+.delete-btn {
     background: none;
     width: 36px;
     height: 36px;
@@ -524,7 +599,8 @@ input:focus, select:focus, textarea:focus {
     color: var(--kesz-szin);
 }
 
-.complete-btn:hover, .complete-btn.completed {
+.complete-btn:hover,
+.complete-btn.completed {
     background: var(--kesz-szin);
     color: white;
     transform: scale(1.1);
@@ -551,6 +627,7 @@ input:focus, select:focus, textarea:focus {
     color: var(--szoveg-halvany);
 }
 
+/* ===== MEGVALÓSÍTVA JELVÉNY ===== */
 .completed-badge {
     position: absolute;
     top: 20px;
@@ -564,7 +641,7 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
 }
 
-/* ===== REAKCIÓK (like/dislike) ===== */
+/* ===== REAKCIÓK (LIKE / DISLIKE) ===== */
 .reakcio-sor {
     display: flex;
     gap: 8px;
@@ -725,7 +802,7 @@ input:focus, select:focus, textarea:focus {
     color: var(--szoveg-halvany);
 }
 
-/* ===== TOAST ===== */
+/* ===== ÉRTESÍTÉS (TOAST) ===== */
 .toast {
     position: fixed;
     bottom: 25px;
@@ -747,38 +824,124 @@ input:focus, select:focus, textarea:focus {
     transform: translateX(-50%) translateY(0);
 }
 
-/* ===== RESZPONZÍV ===== */
+/* ===== RESZPONZÍV MEGJELENÉS ===== */
 @media (max-width: 992px) {
-    h1 { font-size: 3rem; }
-    .ideas-grid { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
+    h1 {
+        font-size: 3rem;
+    }
+
+    .ideas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
 }
 
 @media (max-width: 768px) {
-    h1 { font-size: 2.4rem; }
-    .container { padding: 10px; }
-    .idea-box { padding: 20px; }
-    .input-section { padding: 20px; }
-    .filter-section { flex-direction: column; align-items: stretch; }
-    .filter-tabs { justify-content: center; }
-    .stats-container { justify-content: space-around; }
-    .ideas-grid { grid-template-columns: 1fr; }
-    .form-actions { flex-direction: column; }
-    .btn-primary, .btn-secondary { width: 100%; }
-    .idea-header { padding-right: 0; }
-    .completed-badge { position: static; display: inline-block; margin-bottom: 10px; }
-    .admin-btn { width: 40px; height: 40px; font-size: 16px; }
+    h1 {
+        font-size: 2.4rem;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .idea-box {
+        padding: 20px;
+    }
+
+    .input-section {
+        padding: 20px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-tabs {
+        justify-content: center;
+    }
+
+    .stats-container {
+        justify-content: space-around;
+    }
+
+    .ideas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+
+    .idea-header {
+        padding-right: 0;
+    }
+
+    .completed-badge {
+        position: static;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .admin-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .vissza-btn {
+        margin-top: 20px;
+        padding: 11px 20px;
+        font-size: 0.95rem;
+    }
 }
 
 @media (max-width: 480px) {
-    h1 { font-size: 2rem; }
-    .subtitle { font-size: 1rem; }
-    .motto { font-size: 0.9rem; }
-    .badge-icon { width: 60px; }
-    .input-header h2 { font-size: 1.3rem; }
+    h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .motto {
+        font-size: 0.9rem;
+    }
+
+    .badge-icon {
+        width: 60px;
+    }
+
+    .input-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .stats-container {
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 20px;
+    }
+
+    .ideas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vissza-btn {
+        width: 100%;
+        max-width: 280px;
+    }
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar {
+    width: 12px;
+}
 
 ::-webkit-scrollbar-track {
     background: #eef2ff;
@@ -790,5 +953,3 @@ input:focus, select:focus, textarea:focus {
     border-radius: 10px;
     border: 3px solid #eef2ff;
 }
-
-
